@@ -36,7 +36,8 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">邮箱：</label>
                     <div class="col-sm-4">
-                        <input type="text" name ="email" class="form-control email" id="inputEmail3" value="lisisi@126.com">
+                        <input type="text" name="email" class="form-control email" id="inputEmail3"
+                            value="lisisi@126.com">
                     </div>
                 </div>
 
@@ -44,14 +45,16 @@
                     <label for="inputPassword3" class="col-sm-2 control-label">用户图标：</label>
                     <div class="col-sm-10">
                         <img src="images/2.jpg" alt="" class="user_pic">
-                        <input type="file" id="exampleInputFile" name="user_pic">
+                        <label for="exampleInputFile"><img src="./images/uploadFileIcon.png" alt=""></label>
+                        <input type="file" id="exampleInputFile" name="user_pic" style="opacity: 0">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">密码：</label>
                     <div class="col-sm-4">
-                        <input type="password" class="form-control password" name="password" id="inputEmail3" value="12345678">
+                        <input type="password" class="form-control password" name="password" id="inputEmail3"
+                            value="12345678">
                     </div>
                 </div>
 
@@ -66,39 +69,50 @@
     </div>
     <script>
         $(function () {
+            //获取用户信息,更改用户中心的表单信息
             $.ajax({
                 type: "get",
                 url: "http://localhost:8000/admin/userinfo_get",
                 success: function (res) {
                     for (var key in res.data) {
-                        var data=res.data;
-                        $("input."+key).val(data[key]);
+                        var data = res.data;
+                        $("input." + key).val(data[key]);
                     }
-                    $('.user_pic').attr('src',data['user_pic'])
+                    $('.user_pic').attr('src', data['user_pic'])
                 }
             })
             //点击修改,修改用户信息
-            $('.btn-success').on('click',function(e){
+            $('.btn-success').on('click', function (e) {
                 e.preventDefault();
-                var formdata=new FormData($(".article_form")[0]);
+                var formdata = new FormData($(".article_form")[0]);
                 $.ajax({
-                    type:"post",
-                    url:"http://localhost:8000/admin/userinfo_edit",
-                    data:formdata,
-                    contentType:false,
-                    processData:false,
-                    success:function(res){
+                    type: "post",
+                    url: "http://localhost:8000/admin/userinfo_edit",
+                    data: formdata,
+                    contentType: false,
+                    processData: false,
+                    success: function (res) {
+                        //修改成功后同步 主页左上方和右上方的用户信息
                         console.log(res);
-                        
+                        if (res.code == 200) {
+                            //    parent.$('.user_info img').attr('src', backData.data.user_pic);
+                            //     parent.$('.user_info i').text(backData.data.username)
+                            //     parent.$('.user_center_link img').attr('src', backData.data.user_pic)
+                            $('.user_info img', parent.document).attr('src', backData.data.user_pic);
+                            $('.user_info i', parent.document).text(backData.data.username)
+                            $('.user_center_link img', parent.document).attr('src', backData.data.user_pic)
+                        }
                     }
 
                 })
             })
             //修改头像,显示头像功能
-            $("#exampleInputFile").on("change",function(){
-              var url=URL.createObjectURL(this.files[0]) ;
-              $('.user_pic').attr('src',url);
+            $("#exampleInputFile").on("change", function () {
+                var url = URL.createObjectURL(this.files[0]);
+                $('.user_pic').attr('src', url);
             })
+            //美化按钮图标
+
 
 
 
